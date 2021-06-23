@@ -3,5 +3,41 @@
 {% block title %}Home Page | TODO-APP {% endblock  %}
 
 {% block body %}
-    <h1>Hello from Index.html</h1>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col mb-3 justify-content-center">
+                <h2>Add TODO Items</h2>
+                <form action="{% url 'home:add_todo' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    {# TODO: Add some styling to the input text #}
+                    <input type="text" name="title" placeholder="Todo Title" class="p-1 input-style d-block mb-2" autocomplete="off">
+                    <input type="text" name="content" placeholder="Type here..." class="p-1 input-style d-block mb-2" autocomplete="off">
+                    <button class="btn btn-outline-primary" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        <div class="row py-5">
+            <div class="accordion" id="accordionExample">
+                {% for todo in todos_list %}
+                    <div class="accordion-item border border-primary">
+                        <h2 class="accordion-header" id="heading{{ todo.id }}">    
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ todo.id }}" aria-expanded="true" aria-controls="collapse{{ todo.id }}">
+                            <h3>{{ todo.title }}</h3>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ todo.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ todo.id }}" data-bs-parent="#accordionExample">
+                            <div class="accordion-body text-center">
+                                <p><strong>{{ todo.text }}</strong></p>
+                                <p>Created on: {{ todo.date_added }}</p>
+                                <form action="{% url 'home:delete_todo' todo.id %}" method="post">
+                                {% csrf_token %}
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock  %}
